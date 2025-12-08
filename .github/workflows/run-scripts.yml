@@ -1,0 +1,25 @@
+name: Run Python Scripts
+on:
+  workflow_call
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "3.12"
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Run main scripts
+      run: |
+        for file in scripts/*.py; do
+          python $file
+        done
+

@@ -1,0 +1,25 @@
+name: Run Jupyter Notebooks
+on:
+  workflow_call
+
+jobs:
+  notebook:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "3.12"
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install jupyter nbconvert
+
+    - name: Run notebooks
+      run: |
+        for nb in notebooks/*.ipynb; do
+          jupyter nbconvert --to notebook --execute "$nb" --output /dev/null
+        done
