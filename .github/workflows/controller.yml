@@ -13,3 +13,7 @@ jobs:
     lint:
         needs: [run-notebooks]
         uses: ./.github/workflows/lint.yml
+    
+    merge-updates:
+        needs: [run-notebooks,lint]
+        uses: ./.github/workflows/merge-updates.yml
