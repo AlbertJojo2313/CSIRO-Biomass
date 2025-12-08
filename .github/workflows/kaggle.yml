@@ -1,0 +1,33 @@
+name: Kaggle Workflow
+
+on:
+  workflow_call
+
+jobs:
+  run_notebooks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Configure Kaggle API
+        run: |
+          mkdir -p ~/.kaggle
+          echo "{\"username\":\"${{ secrets.KAGGLE_USERNAME }}\",\"key\":\"${{ secrets.KAGGLE_KEY }}\"}" > ~/.kaggle/kaggle.json
+          chmod 600 ~/.kaggle/kaggle.json
+
+      - name: Download Kaggle Competition Data
+        run: |
+          mkdir -p data
+          kaggle competitions download -c csiro-biomass
+          unzip data/*.zip -d data
+
