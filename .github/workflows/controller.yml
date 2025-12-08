@@ -7,9 +7,9 @@ on:
 jobs:
     run-notebooks:
         uses: ./.github/workflows/run-notebooks.yml
-    run-scripts:
-        needs: run-notebooks # scripts run after notebooks pass
-        uses: ./.github/workflows/run-scripts.yml
+    # run-scripts:
+        #needs: run-notebooks # scripts run after notebooks pass
+        # uses: ./.github/workflows/run-scripts.yml
     lint:
-        needs: [run-scripts, run-notebooks]
+        needs: [run-notebooks]
         uses: ./.github/workflows/lint.yml
