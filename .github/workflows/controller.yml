@@ -7,6 +7,9 @@ on:
 jobs:
     run-notebooks:
         uses: ./.github/workflows/run-notebooks.yml
+        secrets:
+            KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+            KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
     # run-scripts:
         #needs: run-notebooks # scripts run after notebooks pass
         # uses: ./.github/workflows/run-scripts.yml
