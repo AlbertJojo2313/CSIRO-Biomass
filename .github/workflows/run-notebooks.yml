@@ -1,8 +1,19 @@
 name: Run Jupyter Notebooks
 on:
-  workflow_call
+  workflow_call:
+    secrets:
+      KAGGLE_USERNAME:
+        required: true
+      KAGGLE_KEY:
+        required: true
 
 jobs:
+  kaggle:
+    uses: ./.github/workflows/kaggle.yml
+    secrets:
+      KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+      KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+      
   notebook:
     runs-on: ubuntu-latest
 
