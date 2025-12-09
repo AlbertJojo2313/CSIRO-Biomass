@@ -27,4 +27,4 @@ jobs:
           chmod 600 ~/.kaggle/kaggle.json
 
       - name: Download data
-        run: kaggle competitions download -c <competition-name> -p data/
+        run: kaggle competitions download -c csiro-biomass -p data/
