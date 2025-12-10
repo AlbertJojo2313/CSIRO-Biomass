@@ -1,22 +1,48 @@
 name: Controller Pipeline
+
 on:
-    push:
-        branches: [updates]
-    pull_request:
-        branches: [main]
+  push:
+    branches: [updates]
+  pull_request:
+    branches: [main]
+
 jobs:
-    run-notebooks:
-        uses: ./.github/workflows/run-notebooks.yml
-        secrets:
-            KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
-            KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
-    # run-scripts:
-        #needs: run-notebooks # scripts run after notebooks pass
-        # uses: ./.github/workflows/run-scripts.yml
-    lint:
-        needs: [run-notebooks]
-        uses: ./.github/workflows/lint.yml
-    
-    merge-updates:
-        needs: [run-notebooks,lint]
-        uses: ./.github/workflows/merge-updates.yml
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          docker build -t project-image .
+
+      - name: Setup Kaggle credentials
+        run: |
+          mkdir -p ~/.kaggle
+          echo "{\"username\":\"${{ secrets.KAGGLE_USERNAME }}\",\"key\":\"${{ secrets.KAGGLE_KEY }}\"}" > ~/.kaggle/kaggle.json
+          chmod 600 ~/.kaggle/kaggle.json
+
+      - name: Download Kaggle data
+        run: |
+          kaggle competitions download -c csiro-biomass -p data/
+          unzip data/*.zip -d data/
+
+      - name: Run notebooks inside Docker
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}/data:/app/data \
+            -v ${{ github.workspace }}/notebooks:/app/notebooks \
+            project-image \
+            bash -c 'for nb in notebooks/*.ipynb; do \
+                        jupyter nbconvert --to notebook --execute "$nb" --output "$nb"; \
+                     done'
+
+  lint:
+    needs: build-and-run
+    uses: ./.github/workflows/lint.yml
+
+  merge-updates:
+    needs: [build-and-run, lint]
+    uses: ./.github/workflows/merge.yml
