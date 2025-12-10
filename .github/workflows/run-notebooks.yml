@@ -32,7 +32,7 @@ jobs:
 
       - name: Run Notebooks
         run: |
-          cd notebooks
+          cd notebooks/
           for nb in *.ipynb; do
             jupyter nbconvert --to notebook --execute "$nb" --output "$nb"
           done
