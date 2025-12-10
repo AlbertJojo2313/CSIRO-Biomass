@@ -39,7 +39,7 @@ jobs:
             -v ${{ github.workspace }}/data:/app/data \
             -v ${{ github.workspace }}/notebooks:/app/notebooks \
             project-image \
-            bash -c 'for nb in notebooks/*.ipynb; do \
+            bash -c 'for nb in /app/notebooks/*.ipynb; do \
                         jupyter nbconvert --to notebook --execute "$nb" --output "$nb"; \
                      done'
 
