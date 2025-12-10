@@ -6,7 +6,6 @@ on:
         required: true
       KAGGLE_KEY:
         required: true
-
 jobs:
   kaggle-download:
     runs-on: ubuntu-latest
