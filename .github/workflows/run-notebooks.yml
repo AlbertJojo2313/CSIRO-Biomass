@@ -33,5 +33,5 @@ jobs:
       - name: Run Notebooks
         run: |
           for nb in notebooks/*.ipynb; do
-            jupyter nbconvert --to notebook --execute "$nb" --stdout > /dev/null
+            jupyter nbconvert --to notebook --execute "$nb" --output "$nb"
           done
