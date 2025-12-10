@@ -24,10 +24,14 @@ jobs:
           echo "{\"username\":\"${{ secrets.KAGGLE_USERNAME }}\",\"key\":\"${{ secrets.KAGGLE_KEY }}\"}" > ~/.kaggle/kaggle.json
           chmod 600 ~/.kaggle/kaggle.json
 
-      - name: Download Kaggle data
+      - name: Download Kaggle data in Docker
         run: |
-          kaggle competitions download -c csiro-biomass -p data/
-          unzip data/*.zip -d data/
+          docker run --rm \
+            -v ${{github.workspace }}/data:/app/data \
+            -v ~/.kaggle:/root/.kaggle \
+            project-image \
+            bash -c "kaggle competitions download -c csiro-biomass -p /app/data && unzip /app/data/*.zip -d /app/data"
+          
 
       - name: Run notebooks inside Docker
         run: |
