@@ -45,4 +45,4 @@ jobs:
 
   merge-updates:
     needs: [build-and-run, lint]
-    uses: ./.github/workflows/merge.yml
+    uses: ./.github/workflows/merge-updates.yml
