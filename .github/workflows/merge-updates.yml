@@ -3,9 +3,6 @@ name: Merge Updates into Main
 on:
   workflow_call
 
-permissions:
-  contents: write
-
 jobs:
   merge:
     runs-on: ubuntu-latest
