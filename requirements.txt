@@ -2,3 +2,5 @@ flake8
 pandas
 numpy
 matplotlib
+seaborn
+kaggle
