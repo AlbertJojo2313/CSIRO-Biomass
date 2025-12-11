@@ -13,18 +13,28 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+      
+      - name: Cache Kaggle Data
+        id: kaggle-cache
+        uses: actions/cache@v4
+        with:
+          path: data
+          key: kaggle-csiro-biomass-v1
+
 
       - name: Build Docker image
         run: |
           docker build -t project-image .
 
       - name: Setup Kaggle credentials
+          # Only used if cache is not present
         run: |
           mkdir -p ~/.kaggle
           echo "{\"username\":\"${{ secrets.KAGGLE_USERNAME }}\",\"key\":\"${{ secrets.KAGGLE_KEY }}\"}" > ~/.kaggle/kaggle.json
           chmod 600 ~/.kaggle/kaggle.json
 
       - name: Download Kaggle data in Docker
+        if: steps.kaggle-cache.outputs.cache-hit != 'true'
         run: |
           docker run --rm \
             -v ${{github.workspace }}/data:/app/data \
@@ -32,7 +42,11 @@ jobs:
             project-image \
             bash -c "kaggle competitions download -c csiro-biomass -p /app/data && unzip /app/data/*.zip -d /app/data"
           
+      - name: Fix file permissions(Cache)
+        if: steps.kaggle-cache.outputs.cache-hit != 'true'
+        run: sudo chown -R $USER:$USER ${{ github.workspace }}/data
 
+      
       - name: Run notebooks inside Docker
         run: |
           docker run --rm \
