@@ -4,3 +4,7 @@ numpy
 matplotlib
 seaborn
 kaggle
+torchvision
+kagglehub
+torchmetrics
+pytorch_metric_learning
